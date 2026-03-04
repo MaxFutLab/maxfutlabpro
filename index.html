@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Max Fut Lab Pro — Planos, Serviços e Contas</title>
+  <meta name="description" content="Planos, serviços e contas disponíveis para venda. Atendimento via WhatsApp." />
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#101a2e;
+      --muted:#9fb0d0;
+      --text:#e9f0ff;
+      --line:#223055;
+      --accent:#5eead4;
+      --accent2:#60a5fa;
+      --warn:#fbbf24;
+      --ok:#34d399;
+      --bad:#fb7185;
+      --chip:#152544;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 14px;
+      --maxw: 1100px;
+      font-synthesis-weight: none;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background: radial-gradient(900px 400px at 20% -10%, rgba(96,165,250,.25), transparent 60%),
+                  radial-gradient(900px 400px at 80% 0%, rgba(94,234,212,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.35;
+    }
+    a{ color: inherit; text-decoration: none; }
+    .wrap{ max-width: var(--maxw); margin: 0 auto; padding: 28px 18px 60px; }
+    header{
+      display:flex; gap:14px; align-items:center; justify-content:space-between;
+      padding: 18px 18px; border:1px solid var(--line); background: rgba(16,26,46,.75);
+      border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(8px);
+    }
+    .brand{ display:flex; gap:14px; align-items:center; }
+    .logo{
+      width:46px; height:46px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(94,234,212,.95), rgba(96,165,250,.95));
+      display:grid; place-items:center; font-weight:900; color:#05101a;
+      box-shadow: 0 10px 24px rgba(94,234,212,.15);
+      user-select:none;
+    }
+    .brand h1{ margin:0; font-size: 18px; letter-spacing:.2px; }
+    .brand p{ margin:2px 0 0; color: var(--muted); font-size: 13px; }
+    .ctaRow{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .btn{
+      padding: 10px 14px; border-radius: 14px; border:1px solid var(--line);
+      background: rgba(21,37,68,.8); color: var(--text);
+      display:inline-flex; align-items:center; gap:10px; font-weight:650;
+      transition: transform .08s ease, border-color .12s ease, background .12s ease;
+      cursor:pointer; user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(96,165,250,.5); background: rgba(21,37,68,1); }
+    .btn.primary{ border-color: rgba(94,234,212,.55); background: rgba(16,26,46,.9); }
+    .btn.primary:hover{ border-color: rgba(94,234,212,.9); }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      background: rgba(21,37,68,.8); border:1px solid var(--line);
+      color: var(--muted); padding: 9px 12px; border-radius: 999px;
+      font-size: 13px;
+    }
+    .grid{
+      margin-top: 18px;
+      display:grid; gap:14px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:start;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(16,26,46,.72);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .panel h2{ margin:0 0 10px; font-size: 16px; }
+    .sub{ color: var(--muted); font-size: 13px; margin-top:-6px; }
+    .tools{
+      display:flex; gap:10px; flex-wrap:wrap; margin: 12px 0 0;
+      align-items:center;
+    }
+    input, select{
+      background: rgba(21,37,68,.85);
+      border:1px solid var(--line);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      outline:none;
+      min-height: 42px;
+    }
+    input::placeholder{ color: rgba(159,176,208,.75); }
+    select{ cursor:pointer; }
+    .cards{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 760px){ .cards{ grid-template-columns: 1fr; } }
+    .card{
+      border:1px solid var(--line);
+      background: rgba(11,18,32,.55);
+      border-radius: var(--radius2);
+      padding: 14px;
+      position: relative;
+      overflow:hidden;
+    }
+    .card .top{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .tag{
+      display:inline-flex; gap:8px; align-items:center;
+      font-size: 12px; color: var(--muted);
+      background: rgba(21,37,68,.8);
+      border:1px solid rgba(34,48,85,.8);
+      padding: 6px 10px; border-radius: 999px;
+      white-space: nowrap;
+    }
+    .badge{
+      font-size: 12px; font-weight:800;
+      padding: 6px 10px; border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(21,37,68,.75);
+    }
+    .badge.ok{ border-color: rgba(52,211,153,.5); color: var(--ok); }
+    .badge.warn{ border-color: rgba(251,191,36,.5); color: var(--warn); }
+    .badge.bad{ border-color: rgba(251,113,133,.5); color: var(--bad); }
+    .title{ font-size: 15px; font-weight:850; margin: 10px 0 6px; letter-spacing:.2px; }
+    .price{ font-size: 20px; font-weight:950; margin: 2px 0 8px; }
+    .muted{ color: var(--muted); font-size: 13px; }
+    ul{ margin: 10px 0 0; padding:0 0 0 18px; color: var(--text); }
+    li{ margin: 6px 0; color: rgba(233,240,255,.9); }
+    .hr{ height:1px; background: var(--line); margin: 12px 0; opacity:.8; }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    .mini{ padding: 9px 12px; font-size: 13px; }
+    .rightStack{ display:grid; gap:14px; }
+    footer{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+      opacity:.9;
+    }
+    .hint{
+      color: rgba(159,176,208,.9);
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    .kpiRow{
+      display:grid; gap:10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 12px;
+    }
+    @media (max-width: 760px){ .kpiRow{ grid-template-columns: 1fr; } }
+    .kpi{
+      border:1px solid var(--line);
+      background: rgba(11,18,32,.55);
+      border-radius: var(--radius2);
+      padding: 12px;
+    }
+    .kpi .n{ font-size: 20px; font-weight:950; }
+    .kpi .l{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">MF</div>
+        <div>
+          <h1 id="brandName">Max Fut Lab Pro</h1>
+          <p id="brandLine">Planos, serviços e contas disponíveis — atendimento rápido no WhatsApp</p>
+        </div>
+      </div>
+
+      <div class="ctaRow">
+        <a class="btn primary" id="whatsBtn" target="_blank" rel="noopener">
+          WhatsApp
+        </a>
+        <button class="btn" id="copyBtn" type="button">Copiar mensagem</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Catálogo</h2>
+        <div class="sub">Filtre e compartilhe. Você controla tudo no bloco de dados (sem precisar mexer no layout).</div>
+
+        <div class="tools">
+          <input id="q" type="text" placeholder="Buscar: FULL, maletas, treinamento, tokens, etc." />
+          <select id="type">
+            <option value="all">Tudo</option>
+            <option value="planos">Planos</option>
+            <option value="servicos">Serviços</option>
+            <option value="contas">Contas à venda</option>
+          </select>
+          <select id="status">
+            <option value="all">Status (todos)</option>
+            <option value="disponivel">Disponível</option>
+            <option value="reservada">Reservada</option>
+            <option value="vendida">Vendida</option>
+          </select>
+        </div>
+
+        <div class="kpiRow" id="kpis"></div>
+
+        <div class="cards" id="cards"></div>
+
+        <div class="hint">Dica: clique em “WhatsApp” no card para abrir a conversa já com a mensagem pronta.</div>
+      </section>
+
+      <aside class="rightStack">
+        <section class="panel">
+          <h2>Como comprar</h2>
+          <div class="sub">Simples, rápido e sem enrolação.</div>
+          <div class="hr"></div>
+          <ol style="margin:0; padding-left:18px;">
+            <li>Escolha o plano/serviço/conta.</li>
+            <li>Clique no botão de WhatsApp do item.</li>
+            <li>Confirme detalhes e forma de pagamento.</li>
+          </ol>
+          <div class="hr"></div>
+          <div class="muted">
+            Se você quiser, dá pra hospedar isso grátis (GitHub Pages / Cloudflare Pages) e virar um link único pra mandar nos grupos.
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Informações</h2>
+          <div class="sub" id="infoText"></div>
+          <div class="hr"></div>
+          <div class="muted" id="notice"></div>
+        </section>
+      </aside>
+    </div>
+
+    <footer>
+      © <span id="year"></span> • Página simples, rápida e pronta pra vender.
+    </footer>
+  </div>
+
+  <script>
+    // =========================
+    // EDITE AQUI (DADOS)
+    // =========================
+    const DATA = {
+      brandName: "Max Fut Lab Pro",
+      brandLine: "Planos, serviços e contas disponíveis — atendimento rápido no WhatsApp",
+      whatsappNumber: "5585999999999", // <-- troque (DDD+numero). Ex: 5585987654321
+      defaultMessage: "Olá! Vim pela página. Quero informações sobre: {{ITEM}}.",
+      infoText: "Pagamento via Pix. Atendimento por ordem de chegada. Envio de comprovantes e detalhes no WhatsApp.",
+      notice: "Contas: disponibilidade muda rápido. Se estiver 'Reservada', ainda pode voltar a ficar disponível.",
+
+      planos: [
+        {
+          id: "plano-basic",
+          nome: "BASIC",
+          preco: "R$ 0,00",
+          status: "disponivel",
+          tags: ["Coletas", "Entrada"],
+          itens: [
+            "Check-in diário",
+            "Daily Streak",
+            "Maletas verdes"
+          ],
+          destaque: ""
+        },
+        {
+          id: "plano-pro",
+          nome: "PRO",
+          preco: "R$ 0,00",
+          status: "disponivel",
+          tags: ["Coletas", "Custo-benefício"],
+          itens: [
+            "Tudo do BASIC",
+            "Maletas extras"
+          ],
+          destaque: ""
+        },
+        {
+          id: "plano-prime",
+          nome: "PRIME",
+          preco: "R$ 0,00",
+          status: "disponivel",
+          tags: ["Coletas", "Evolução"],
+          itens: [
+            "Tudo do BASIC",
+            "Livros de treino",
+            "Drop Ball",
+            "Renovação de contratos",
+            "Coletas do campus",
+            "Evolução do campus"
+          ],
+          destaque: ""
+        },
+        {
+          id: "plano-full",
+          nome: "FULL",
+          preco: "R$ 0,00",
+          status: "disponivel",
+          tags: ["Coletas", "Mais completo"],
+          itens: [
+            "Tudo do PRO",
+            "Tudo do PRIME"
+          ],
+          destaque: "MAIS COMPLETO"
+        }
+      ],
+
+      servicos: [
+        {
+          id: "srv-treino",
+          nome: "Treinamento de Jogadores",
+          preco: "Sob consulta",
+          status: "disponivel",
+          tags: ["Evolução", "Ciclo de treino"],
+          itens: [
+            "Preço proporcional ao % de evolução",
+            "Acompanhamento e otimização do treino",
+            "Entrega com transparência de evolução"
+          ],
+          destaque: ""
+        },
+        {
+          id: "srv-coleta-avulsa",
+          nome: "Coletas Avulsas",
+          preco: "Sob consulta",
+          status: "disponivel",
+          tags: ["Rápido", "Pontual"],
+          itens: [
+            "Coletas específicas sob demanda",
+            "Ideal pra quem não quer plano mensal"
+          ],
+          destaque: ""
+        }
+      ],
+
+      contas: [
+        {
+          id: "acc-001",
+          nome: "Conta #001 — Exemplo",
+          preco: "R$ 0,00",
+          status: "disponivel",
+          tags: ["Tokens", "Maletas", "Livros"],
+          itens: [
+            "Tokens: 0",
+            "Maletas: 0",
+            "Livros táticos: 0",
+            "Classes raras/elite/crack: 0"
+          ],
+          destaque: ""
+        },
+        {
+          id: "acc-002",
+          nome: "Conta #002 — Exemplo",
+          preco: "R$ 0,00",
+          status: "reservada",
+          tags: ["Boa base", "Oportunidade"],
+          itens: [
+            "Resumo rápido dos recursos",
+            "Observação: reservada até DD/MM"
+          ],
+          destaque: ""
+        }
+      ]
+    };
+
+    // =========================
+    // APP
+    // =========================
+    const $ = (s) => document.querySelector(s);
+    const cardsEl = $("#cards");
+    const kpisEl = $("#kpis");
+
+    $("#brandName").textContent = DATA.brandName;
+    $("#brandLine").textContent = DATA.brandLine;
+    $("#infoText").textContent = DATA.infoText;
+    $("#notice").textContent = DATA.notice;
+    $("#year").textContent = new Date().getFullYear();
+
+    function statusBadge(status){
+      if(status === "disponivel") return `<span class="badge ok">Disponível</span>`;
+      if(status === "reservada") return `<span class="badge warn">Reservada</span>`;
+      return `<span class="badge bad">Vendida</span>`;
+    }
+
+    function waLink(text){
+      const msg = encodeURIComponent(text);
+      return `https://wa.me/${DATA.whatsappNumber}?text=${msg}`;
+    }
+
+    function itemMessage(item, tipo){
+      const base = DATA.defaultMessage.replace("{{ITEM}}", `${tipo.toUpperCase()} — ${item.nome}`);
+      return base;
+    }
+
+    function normalize(s){
+      return (s||"").toString().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,"");
+    }
+
+    function buildList(type){
+      const list = [];
+      if(type === "all" || type === "planos") DATA.planos.forEach(x => list.push({ ...x, _tipo:"planos" }));
+      if(type === "all" || type === "servicos") DATA.servicos.forEach(x => list.push({ ...x, _tipo:"servicos" }));
+      if(type === "all" || type === "contas") DATA.contas.forEach(x => list.push({ ...x, _tipo:"contas" }));
+      return list;
+    }
+
+    function renderKpis(allItems){
+      const total = allItems.length;
+      const disp = allItems.filter(x => x.status === "disponivel").length;
+      const res = allItems.filter(x => x.status === "reservada").length;
+      kpisEl.innerHTML = `
+        <div class="kpi"><div class="n">${total}</div><div class="l">Itens no catálogo</div></div>
+        <div class="kpi"><div class="n">${disp}</div><div class="l">Disponíveis</div></div>
+        <div class="kpi"><div class="n">${res}</div><div class="l">Reservados</div></div>
+      `;
+    }
+
+    function render(){
+      const q = normalize($("#q").value);
+      const type = $("#type").value;
+      const status = $("#status").value;
+
+      let items = buildList(type);
+
+      // KPIs sempre no total do tipo selecionado (antes do filtro por busca/status)
+      renderKpis(items);
+
+      if(status !== "all"){
+        items = items.filter(x => x.status === status);
+      }
+
+      if(q){
+        items = items.filter(x => {
+          const hay = normalize(
+            [x.nome, x.preco, x.status, x._tipo, ...(x.tags||[]), ...(x.itens||[]), x.destaque].join(" | ")
+          );
+          return hay.includes(q);
+        });
+      }
+
+      cardsEl.innerHTML = items.map(item => {
+        const tipoLabel = item._tipo === "planos" ? "Plano" : item._tipo === "servicos" ? "Serviço" : "Conta";
+        const msg = itemMessage(item, tipoLabel);
+        const link = waLink(msg);
+
+        const highlight = item.destaque ? `
+          <div class="tag" style="border-color: rgba(94,234,212,.55); color: var(--text);">
+            <span style="width:8px;height:8px;border-radius:99px;background:rgba(94,234,212,.95);display:inline-block"></span>
+            ${item.destaque}
+          </div>` : `<span class="tag">${tipoLabel}</span>`;
+
+        return `
+          <article class="card">
+            <div class="top">
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                ${highlight}
+                ${(item.tags||[]).slice(0,2).map(t=>`<span class="tag">${t}</span>`).join("")}
+              </div>
+              ${statusBadge(item.status)}
+            </div>
+
+            <div class="title">${item.nome}</div>
+            <div class="price">${item.preco}</div>
+
+            <div class="muted">Inclui:</div>
+            <ul>${(item.itens||[]).map(i=>`<li>${i}</li>`).join("")}</ul>
+
+            <div class="actions">
+              <a class="btn mini primary" href="${link}" target="_blank" rel="noopener">WhatsApp (este item)</a>
+              <button class="btn mini" type="button" data-copy="${encodeURIComponent(msg)}">Copiar msg</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      // bind copy buttons
+      document.querySelectorAll("[data-copy]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const txt = decodeURIComponent(btn.getAttribute("data-copy"));
+          try{
+            await navigator.clipboard.writeText(txt);
+            btn.textContent = "Copiado ✅";
+            setTimeout(()=> btn.textContent = "Copiar msg", 1200);
+          }catch(e){
+            alert("Não consegui copiar automaticamente. Copie manualmente: \n\n" + txt);
+          }
+        });
+      });
+    }
+
+    // top buttons
+    const mainLink = waLink(DATA.defaultMessage.replace("{{ITEM}}", "um item do catálogo"));
+    $("#whatsBtn").href = mainLink;
+
+    $("#copyBtn").addEventListener("click", async () => {
+      const txt = DATA.defaultMessage.replace("{{ITEM}}", "um item do catálogo");
+      try{
+        await navigator.clipboard.writeText(txt);
+        $("#copyBtn").textContent = "Copiado ✅";
+        setTimeout(()=> $("#copyBtn").textContent = "Copiar mensagem", 1200);
+      }catch(e){
+        alert("Não consegui copiar automaticamente. Copie manualmente: \n\n" + txt);
+      }
+    });
+
+    // filters
+    ["q","type","status"].forEach(id => $("#"+id).addEventListener("input", render));
+    render();
+  </script>
+</body>
+</html>
