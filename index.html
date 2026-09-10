@@ -167,6 +167,36 @@
     }
     .kpi .n{ font-size: 20px; font-weight:950; }
     .kpi .l{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .plans-section{ margin-top:18px; }
+    .plans-heading{ text-align:center; padding:24px 12px 26px; }
+    .plans-heading h2{ margin:0; font-size:32px; letter-spacing:-.6px; }
+    .plans-heading p{ margin:10px 0 0; color:var(--muted); }
+    .comparison-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); }
+    .comparison-table{ width:100%; min-width:760px; border-collapse:collapse; background:rgba(6,11,20,.78); }
+    .comparison-table th,
+    .comparison-table td{ padding:15px 18px; border-bottom:1px solid rgba(34,48,85,.65); text-align:center; }
+    .comparison-table tr:last-child th,
+    .comparison-table tr:last-child td{ border-bottom:0; }
+    .comparison-table th:first-child{ width:38%; text-align:left; }
+    .comparison-table thead th{ color:var(--text); font-size:14px; }
+    .comparison-table thead th:first-child{ color:var(--muted); font-weight:600; }
+    .comparison-table tbody th{ font-size:14px; font-weight:650; }
+    .comparison-table .featured{ background:rgba(94,234,212,.08); }
+    .plan-name{ display:block; font-weight:900; }
+    .plan-price{ display:block; color:var(--accent); font-size:13px; margin-top:4px; }
+    .plan-highlight{ display:inline-block; margin-top:6px; padding:3px 9px; border-radius:99px; background:var(--accent); color:#05101a; font-size:9px; font-weight:900; }
+    .has-feature{ color:#20ddd0; font-size:25px; line-height:1; }
+    .no-feature{ color:rgba(159,176,208,.35); font-size:23px; line-height:1; }
+    .plan-actions{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:16px; }
+    .plan-actions .btn{ justify-content:center; }
+    .plan-actions .featured-action{ background:var(--accent); border-color:var(--accent); color:#05101a; }
+    .purchase-info{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
+    @media (max-width:760px){
+      .plans-heading h2{ font-size:27px; }
+      .plan-actions{ grid-template-columns:1fr 1fr; }
+      .purchase-info{ grid-template-columns:1fr; }
+    }
+    @media (max-width:480px){ .plan-actions{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -188,35 +218,22 @@
       </div>
     </header>
 
-    <div class="grid">
-      <section class="panel">
-        <h2>Catálogo</h2>
-        <div class="sub">Filtre e compartilhe. Você controla tudo no bloco de dados (sem precisar mexer no layout).</div>
-
-        <div class="tools">
-          <input id="q" type="text" placeholder="Buscar: FULL, maletas, treinamento, tokens, etc." />
-          <select id="type">
-            <option value="all">Tudo</option>
-            <option value="planos">Planos</option>
-            <option value="servicos">Serviços</option>
-            <option value="contas">Contas à venda</option>
-          </select>
-          <select id="status">
-            <option value="all">Status (todos)</option>
-            <option value="disponivel">Disponível</option>
-            <option value="reservada">Reservada</option>
-            <option value="vendida">Vendida</option>
-          </select>
+    <main>
+      <section class="plans-section" aria-labelledby="plans-title">
+        <div class="plans-heading">
+          <h2 id="plans-title">Planos de Coleta</h2>
+          <p>Compare os planos e escolha o ideal para o seu nível de jogo.</p>
         </div>
-
-        <div class="kpiRow" id="kpis"></div>
-
-        <div class="cards" id="cards"></div>
-
-        <div class="hint">Dica: clique em “WhatsApp” no card para abrir a conversa já com a mensagem pronta.</div>
+        <div class="comparison-scroll">
+          <table class="comparison-table">
+            <thead id="plansHead"></thead>
+            <tbody id="plansBody"></tbody>
+          </table>
+        </div>
+        <div class="plan-actions" id="planActions"></div>
       </section>
 
-      <aside class="rightStack">
+      <div class="purchase-info">
         <section class="panel">
           <h2>Como comprar</h2>
           <div class="sub">Simples, rápido e sem enrolação.</div>
@@ -238,8 +255,8 @@
           <div class="hr"></div>
           <div class="muted" id="notice"></div>
         </section>
-      </aside>
-    </div>
+      </div>
+    </main>
 
     <footer>
       © <span id="year"></span> • Página simples, rápida e pronta pra vender.
@@ -253,7 +270,7 @@
     const DATA = {
       brandName: "Max Fut Lab Pro",
       brandLine: "Planos, serviços e contas disponíveis — atendimento rápido no WhatsApp",
-      whatsappNumber: "5585999999999", // <-- troque (DDD+numero). Ex: 5585987654321
+      whatsappNumber: "557988683745", // +55 79 8868-3745 (somente dígitos para o wa.me)
       defaultMessage: "Olá! Vim pela página. Quero informações sobre: {{ITEM}}.",
       infoText: "Pagamento via Pix. Atendimento por ordem de chegada. Envio de comprovantes e detalhes no WhatsApp.",
       notice: "Contas: disponibilidade muda rápido. Se estiver 'Reservada', ainda pode voltar a ficar disponível.",
@@ -262,12 +279,11 @@
         {
           id: "plano-basic",
           nome: "BASIC",
-          preco: "R$ 0,00",
+          preco: "R$ 20,00",
           status: "disponivel",
-          tags: ["Coletas", "Entrada"],
+          tags: ["Coletas", "Simples"],
           itens: [
             "Check-in diário",
-            "Daily Streak",
             "Maletas verdes"
           ],
           destaque: ""
@@ -275,99 +291,46 @@
         {
           id: "plano-pro",
           nome: "PRO",
-          preco: "R$ 0,00",
+          preco: "R$ 25,00",
           status: "disponivel",
-          tags: ["Coletas", "Custo-benefício"],
+          tags: ["Coletas", "Vídeos"],
           itens: [
-            "Tudo do BASIC",
-            "Maletas extras"
+            "Check-in diário",
+            "Maletas verdes",
+            "Maletas Extras"
           ],
           destaque: ""
         },
         {
           id: "plano-prime",
           nome: "PRIME",
-          preco: "R$ 0,00",
+          preco: "R$ 25,00",
           status: "disponivel",
-          tags: ["Coletas", "Evolução"],
+          tags: ["Coletas", "Custo-benefício"],
           itens: [
-            "Tudo do BASIC",
+            "Check-in diário",
+            "Maletas verdes",
             "Livros de treino",
-            "Drop Ball",
-            "Renovação de contratos",
-            "Coletas do campus",
-            "Evolução do campus"
+            "DropBall",
+            "Crachá de Mentor"
           ],
-          destaque: ""
+          destaque: "MAIS ESCOLHIDO"
         },
         {
           id: "plano-full",
           nome: "FULL",
-          preco: "R$ 0,00",
+          preco: "R$ 30,00",
           status: "disponivel",
-          tags: ["Coletas", "Mais completo"],
+          tags: ["Coletas", "Completo"],
           itens: [
-            "Tudo do PRO",
-            "Tudo do PRIME"
+            "Check-in diário",
+            "Maletas verdes",
+            "Maletas Extras",
+            "Livros de treino",
+            "DropBall",
+            "Crachá de Mentor"
           ],
           destaque: "MAIS COMPLETO"
-        }
-      ],
-
-      servicos: [
-        {
-          id: "srv-treino",
-          nome: "Treinamento de Jogadores",
-          preco: "Sob consulta",
-          status: "disponivel",
-          tags: ["Evolução", "Ciclo de treino"],
-          itens: [
-            "Preço proporcional ao % de evolução",
-            "Acompanhamento e otimização do treino",
-            "Entrega com transparência de evolução"
-          ],
-          destaque: ""
-        },
-        {
-          id: "srv-coleta-avulsa",
-          nome: "Coletas Avulsas",
-          preco: "Sob consulta",
-          status: "disponivel",
-          tags: ["Rápido", "Pontual"],
-          itens: [
-            "Coletas específicas sob demanda",
-            "Ideal pra quem não quer plano mensal"
-          ],
-          destaque: ""
-        }
-      ],
-
-      contas: [
-        {
-          id: "acc-001",
-          nome: "Conta #001 — Exemplo",
-          preco: "R$ 0,00",
-          status: "disponivel",
-          tags: ["Tokens", "Maletas", "Livros"],
-          itens: [
-            "Tokens: 0",
-            "Maletas: 0",
-            "Livros táticos: 0",
-            "Classes raras/elite/crack: 0"
-          ],
-          destaque: ""
-        },
-        {
-          id: "acc-002",
-          nome: "Conta #002 — Exemplo",
-          preco: "R$ 0,00",
-          status: "reservada",
-          tags: ["Boa base", "Oportunidade"],
-          itens: [
-            "Resumo rápido dos recursos",
-            "Observação: reservada até DD/MM"
-          ],
-          destaque: ""
         }
       ]
     };
@@ -376,125 +339,50 @@
     // APP
     // =========================
     const $ = (s) => document.querySelector(s);
-    const cardsEl = $("#cards");
-    const kpisEl = $("#kpis");
-
     $("#brandName").textContent = DATA.brandName;
     $("#brandLine").textContent = DATA.brandLine;
     $("#infoText").textContent = DATA.infoText;
     $("#notice").textContent = DATA.notice;
     $("#year").textContent = new Date().getFullYear();
 
-    function statusBadge(status){
-      if(status === "disponivel") return `<span class="badge ok">Disponível</span>`;
-      if(status === "reservada") return `<span class="badge warn">Reservada</span>`;
-      return `<span class="badge bad">Vendida</span>`;
-    }
-
     function waLink(text){
       const msg = encodeURIComponent(text);
       return `https://wa.me/${DATA.whatsappNumber}?text=${msg}`;
-    }
-
-    function itemMessage(item, tipo){
-      const base = DATA.defaultMessage.replace("{{ITEM}}", `${tipo.toUpperCase()} — ${item.nome}`);
-      return base;
     }
 
     function normalize(s){
       return (s||"").toString().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,"");
     }
 
-    function buildList(type){
-      const list = [];
-      if(type === "all" || type === "planos") DATA.planos.forEach(x => list.push({ ...x, _tipo:"planos" }));
-      if(type === "all" || type === "servicos") DATA.servicos.forEach(x => list.push({ ...x, _tipo:"servicos" }));
-      if(type === "all" || type === "contas") DATA.contas.forEach(x => list.push({ ...x, _tipo:"contas" }));
-      return list;
-    }
+    function renderPlans(){
+      const resources = [...new Map(
+        DATA.planos.flatMap(plan => plan.itens.map(item => [normalize(item), item]))
+      ).values()];
 
-    function renderKpis(allItems){
-      const total = allItems.length;
-      const disp = allItems.filter(x => x.status === "disponivel").length;
-      const res = allItems.filter(x => x.status === "reservada").length;
-      kpisEl.innerHTML = `
-        <div class="kpi"><div class="n">${total}</div><div class="l">Itens no catálogo</div></div>
-        <div class="kpi"><div class="n">${disp}</div><div class="l">Disponíveis</div></div>
-        <div class="kpi"><div class="n">${res}</div><div class="l">Reservados</div></div>
-      `;
-    }
+      $("#plansHead").innerHTML = `<tr>
+        <th scope="col">Recurso</th>
+        ${DATA.planos.map(plan => `<th scope="col" class="${plan.nome === "FULL" ? "featured" : ""}">
+          <span class="plan-name">${plan.nome}</span>
+          <span class="plan-price">${plan.preco}</span>
+          ${plan.destaque ? `<span class="plan-highlight">${plan.destaque}</span>` : ""}
+        </th>`).join("")}
+      </tr>`;
 
-    function render(){
-      const q = normalize($("#q").value);
-      const type = $("#type").value;
-      const status = $("#status").value;
+      $("#plansBody").innerHTML = resources.map(resource => `<tr>
+        <th scope="row">${resource}</th>
+        ${DATA.planos.map(plan => {
+          const included = plan.itens.some(item => normalize(item) === normalize(resource));
+          const label = included ? "Incluído" : "Não incluído";
+          const symbol = included ? "✓" : "×";
+          return `<td class="${plan.nome === "FULL" ? "featured" : ""}"><span class="${included ? "has-feature" : "no-feature"}" aria-label="${label}">${symbol}</span></td>`;
+        }).join("")}
+      </tr>`).join("");
 
-      let items = buildList(type);
-
-      // KPIs sempre no total do tipo selecionado (antes do filtro por busca/status)
-      renderKpis(items);
-
-      if(status !== "all"){
-        items = items.filter(x => x.status === status);
-      }
-
-      if(q){
-        items = items.filter(x => {
-          const hay = normalize(
-            [x.nome, x.preco, x.status, x._tipo, ...(x.tags||[]), ...(x.itens||[]), x.destaque].join(" | ")
-          );
-          return hay.includes(q);
-        });
-      }
-
-      cardsEl.innerHTML = items.map(item => {
-        const tipoLabel = item._tipo === "planos" ? "Plano" : item._tipo === "servicos" ? "Serviço" : "Conta";
-        const msg = itemMessage(item, tipoLabel);
-        const link = waLink(msg);
-
-        const highlight = item.destaque ? `
-          <div class="tag" style="border-color: rgba(94,234,212,.55); color: var(--text);">
-            <span style="width:8px;height:8px;border-radius:99px;background:rgba(94,234,212,.95);display:inline-block"></span>
-            ${item.destaque}
-          </div>` : `<span class="tag">${tipoLabel}</span>`;
-
-        return `
-          <article class="card">
-            <div class="top">
-              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                ${highlight}
-                ${(item.tags||[]).slice(0,2).map(t=>`<span class="tag">${t}</span>`).join("")}
-              </div>
-              ${statusBadge(item.status)}
-            </div>
-
-            <div class="title">${item.nome}</div>
-            <div class="price">${item.preco}</div>
-
-            <div class="muted">Inclui:</div>
-            <ul>${(item.itens||[]).map(i=>`<li>${i}</li>`).join("")}</ul>
-
-            <div class="actions">
-              <a class="btn mini primary" href="${link}" target="_blank" rel="noopener">WhatsApp (este item)</a>
-              <button class="btn mini" type="button" data-copy="${encodeURIComponent(msg)}">Copiar msg</button>
-            </div>
-          </article>
-        `;
+      $("#planActions").innerHTML = DATA.planos.map(plan => {
+        const message = DATA.defaultMessage.replace("{{ITEM}}", `PLANO — ${plan.nome}`);
+        const featured = plan.nome === "FULL" ? "featured-action" : "";
+        return `<a class="btn ${featured}" href="${waLink(message)}" target="_blank" rel="noopener">◯ Contratar ${plan.nome}</a>`;
       }).join("");
-
-      // bind copy buttons
-      document.querySelectorAll("[data-copy]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const txt = decodeURIComponent(btn.getAttribute("data-copy"));
-          try{
-            await navigator.clipboard.writeText(txt);
-            btn.textContent = "Copiado ✅";
-            setTimeout(()=> btn.textContent = "Copiar msg", 1200);
-          }catch(e){
-            alert("Não consegui copiar automaticamente. Copie manualmente: \n\n" + txt);
-          }
-        });
-      });
     }
 
     // top buttons
@@ -512,9 +400,7 @@
       }
     });
 
-    // filters
-    ["q","type","status"].forEach(id => $("#"+id).addEventListener("input", render));
-    render();
+    renderPlans();
   </script>
 </body>
 </html>
